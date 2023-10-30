@@ -252,36 +252,6 @@ void f_z()
 {
 }
 
-void f_k(FILE *file_data, char ***ID_pole, char ***POS_pole, char ***TYP_pole, char ***HOD_pole, char ***CAS_pole, char ***DATE_pole, int *p_count)
-{
-<<<<<<< HEAD
-    if ()
-        for (int i = 0; i < *p_count; i++) // dealokujem všetky polia
-        {
-            free((*ID_pole)[i]);
-            free((*POS_pole)[i]);
-            free((*TYP_pole)[i]);
-            free((*HOD_pole)[i]);
-            free((*CAS_pole)[i]);
-            free((*DATE_pole)[i]);
-        }
-
-    free(*ID_pole); // dealokujem všetky polia
-    free(*POS_pole);
-    free(*TYP_pole);
-    free(*HOD_pole);
-    free(*CAS_pole);
-    free(*DATE_pole);
-    *ID_pole = NULL; // všetky hodnoty v poliach nastavím na null aby nenastali leaky
-    *POS_pole = NULL;
-    *TYP_pole = NULL;
-    *HOD_pole = NULL;
-    *CAS_pole = NULL;
-    *DATE_pole = NULL;
-=======
->>>>>>> main
-}
-
 int main()
 {
     char vstup;
