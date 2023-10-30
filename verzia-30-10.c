@@ -192,6 +192,7 @@ void f_c(int *p_y, char ***ID_pole, int *p_count, char ***DATE_pole)
         int len_date = 8;
         int ciach_count = 1; // hodnota ktorou počítam počet záznamov v súbore ciachovanie.txt
         char data;
+        int result = 0;
         file_ciach = fopen("ciachovanie.txt", "r"); // otvorím súbor ciachovanie
         for (data = fgetc(file_ciach); data != EOF; data = fgetc(file_ciach))
         {
@@ -202,7 +203,7 @@ void f_c(int *p_y, char ***ID_pole, int *p_count, char ***DATE_pole)
         }
         ciach_count = ciach_count / 3; // v súbore sa vždy nachádzajú dva riadky a jeden prázdny riadok čo je vopred známe
         char line[100];
-        char **was_printed = (char **)calloc(*p_count, sizeof(char));     // alokujem pole do ktorého uložím číselné pozície zhodných záznamov zo súboru dataloger.txt
+        // char **was_printed = (char **)calloc(*p_count, sizeof(char));     // alokujem pole do ktorého uložím číselné pozície zhodných záznamov zo súboru dataloger.txt
         char **ID_ciach = (char **)calloc((ciach_count), sizeof(char *)); // alokujem polia do ktorých uložím záznamy zo súboru ciachovanie.txt
         char **DATE_ciach = (char **)calloc((ciach_count), sizeof(char *));
         for (int i = 0; i < (ciach_count); i++) // alokácia
@@ -212,7 +213,7 @@ void f_c(int *p_y, char ***ID_pole, int *p_count, char ***DATE_pole)
         }
         fseek(file_ciach, 0, SEEK_SET); // Nastaví pozíciu súbora na začiatok
         printf("Hodnota c: %d\n", *p_count);
-        for (int i = 0; i < (ciach_count); i++)
+        for (int i = 0; i < (ciach_count); i++) // načíta do 2D polí súbor ciachovanie
         {
             fgets(line, sizeof(line), file_ciach);
             strncpy((ID_ciach)[i], line, len_id);
@@ -220,8 +221,8 @@ void f_c(int *p_y, char ***ID_pole, int *p_count, char ***DATE_pole)
             strncpy((DATE_ciach)[i], line, len_date);
             fgets(line, sizeof(line), file_ciach);
         }
-        int print_count = 0; // definujem premennú j ktorú využívam ako počítadlo v nasledujúcom cykle
-        int result = 0;
+        // int print_count = 0; // definujem premennú print count ktorú využívam ako počítadlo v nasledujúcom cykle
+        //  int result = 0;
         int ciach_all_dates_match = 0;
         for (int i = 0; i < (ciach_count); i++)
         {
@@ -229,14 +230,31 @@ void f_c(int *p_y, char ***ID_pole, int *p_count, char ***DATE_pole)
             {
                 if (strcmp((*ID_pole)[q], (ID_ciach[i])) == 0)
                 {
+                    int DATE_ciach_num = atoi((DATE_ciach[i])); // konvertuje string na interger
+                    int DATE_pole_num = atoi((*DATE_pole)[q]);
+                    if (DATE_ciach_num == DATE_pole_num)
+                    {
+                        ciach_all_dates_match++;
+                    }
+                    else if (DATE_ciach_num != DATE_pole_num)
+                    {
+                        result = DATE_pole_num - DATE_ciach_num;
+                        result = abs(result);
+                        result = result / 100;
+                        // printf("\n%d-%d=%d\n", DATE_ciach_num, DATE_pole_num, result);
+                        if (result >= *p_y)
+                        {
+                            printf("ID. mer. modulu %s má %d mesiacov od ciachovania\n", (*ID_pole)[q], result - *p_y);
+                        }
+                    }
                 }
             }
         }
-        for (int i = 0; i < print_count; i++)
-        {
-            free(was_printed[i]);
-        }
-        free(was_printed);
+        // for (int i = 0; i < print_count; i++)
+        // {
+        //     free(was_printed[i]);
+        // }
+        // free(was_printed);
     }
 }
 
