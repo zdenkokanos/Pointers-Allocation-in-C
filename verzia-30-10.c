@@ -248,12 +248,8 @@ void f_c(int *p_y, char ***ID_pole, int *p_count, char ***DATE_pole)
                     }
                     break;
                 }
-                else
-                {
-                    
-                }
             }
-        }
+                }
         // for (int i = 0; i < print_count; i++)
         // {
         //     free(was_printed[i]);
