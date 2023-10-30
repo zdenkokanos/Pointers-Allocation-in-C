@@ -250,6 +250,24 @@ void f_c(int *p_y, char ***ID_pole, int *p_count, char ***DATE_pole)
                 }
             }
         }
+        bool found = false;
+        for (int i = 0; i < (*p_count); i++)
+        {
+            found = false;
+            for (int q = 0; q < ciach_count; q++)
+            {
+                found = false;
+                if (strcmp((ID_ciach[q]), (*ID_pole)[i]) == 0)
+                {
+                    found = true;
+                    break;
+                }
+            }
+            if (found == false)
+            {
+                printf("ID. mer. modilu %s nebolo ciachované.\n", (*ID_pole)[i]);
+            }
+        }
     }
 }
 
