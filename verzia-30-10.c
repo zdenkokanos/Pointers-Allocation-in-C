@@ -5,7 +5,7 @@
 
 FILE *f_v(FILE *file_data, char ***ID_pole, char ***POS_pole, char ***TYP_pole, char ***HOD_pole, char ***CAS_pole, char ***DATE_pole, int *p_count) // otvorí súbor pre celý program
 {
-    char data;
+    char data;             // komentár
     if (file_data == NULL) // ak súbor nebol otvorený
     {
         file_data = fopen("dataloger.txt", "r"); // otvorí súbor
@@ -254,16 +254,16 @@ void f_z()
 
 void f_k(FILE *file_data, char ***ID_pole, char ***POS_pole, char ***TYP_pole, char ***HOD_pole, char ***CAS_pole, char ***DATE_pole, int *p_count)
 {
-    if()
-    for (int i = 0; i < *p_count; i++) // dealokujem všetky polia
-    {
-        free((*ID_pole)[i]);
-        free((*POS_pole)[i]);
-        free((*TYP_pole)[i]);
-        free((*HOD_pole)[i]);
-        free((*CAS_pole)[i]);
-        free((*DATE_pole)[i]);
-    }
+    if ()
+        for (int i = 0; i < *p_count; i++) // dealokujem všetky polia
+        {
+            free((*ID_pole)[i]);
+            free((*POS_pole)[i]);
+            free((*TYP_pole)[i]);
+            free((*HOD_pole)[i]);
+            free((*CAS_pole)[i]);
+            free((*DATE_pole)[i]);
+        }
 
     free(*ID_pole); // dealokujem všetky polia
     free(*POS_pole);
