@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdbool.h>
+#include <math.h>
 
 FILE *f_v(FILE *file_data, char ***ID_pole, char ***POS_pole, char ***TYP_pole, char ***HOD_pole, char ***CAS_pole, char ***DATE_pole, int *p_count) // otvorí súbor pre celý program
 {
@@ -211,8 +212,7 @@ void f_c(int *p_y, char ***ID_pole, int *p_count, char ***DATE_pole)
             ID_ciach[i] = (char *)calloc(len_id + 1, sizeof(char));
             DATE_ciach[i] = (char *)calloc(len_date + 1, sizeof(char));
         }
-        fseek(file_ciach, 0, SEEK_SET); // Nastaví pozíciu súbora na začiatok
-        printf("Hodnota c: %d\n", *p_count);
+        fseek(file_ciach, 0, SEEK_SET);         // Nastaví pozíciu súbora na začiatok
         for (int i = 0; i < (ciach_count); i++) // načíta do 2D polí súbor ciachovanie
         {
             fgets(line, sizeof(line), file_ciach);
@@ -228,7 +228,7 @@ void f_c(int *p_y, char ***ID_pole, int *p_count, char ***DATE_pole)
         {
             for (int q = 0; q < *p_count; q++)
             {
-                if (strcmp((*ID_pole)[q], (ID_ciach[i])) == 0)
+                if (strcmp((ID_ciach[i]), (*ID_pole)[q]) == 0)
                 {
                     int DATE_ciach_num = atoi((DATE_ciach[i])); // konvertuje string na interger
                     int DATE_pole_num = atoi((*DATE_pole)[q]);
@@ -240,13 +240,17 @@ void f_c(int *p_y, char ***ID_pole, int *p_count, char ***DATE_pole)
                     {
                         result = DATE_pole_num - DATE_ciach_num;
                         result = abs(result);
-                        result = result / 100;
-                        // printf("\n%d-%d=%d\n", DATE_ciach_num, DATE_pole_num, result);
+                        result = round((double)result / 100);
                         if (result >= *p_y)
                         {
-                            printf("ID. mer. modulu %s má %d mesiacov od ciachovania\n", (*ID_pole)[q], result - *p_y);
+                            printf("ID. mer. modulu %s má %d mesiacov po ciachovaní\n", (*ID_pole)[q], result);
                         }
                     }
+                    break;
+                }
+                else
+                {
+                    
                 }
             }
         }
