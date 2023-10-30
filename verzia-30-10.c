@@ -293,7 +293,7 @@ int main()
             f_z();
             break;
         case 'k':
-            if (ID_pole == NULL)
+            if (ID_pole != NULL)
             {
                 for (int i = 0; i < *p_count; i++) // dealokujem všetky polia
                 {
@@ -321,8 +321,10 @@ int main()
                 return 0;
                 break;
             }
-            else{
-                
+            else
+            {
+                return 0;
+                break;
             }
 
         default:
