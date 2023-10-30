@@ -251,7 +251,7 @@ void f_c(int *p_y, char ***ID_pole, int *p_count, char ***DATE_pole)
             }
         }
         bool found = false;
-        for (int i = 0; i < (*p_count); i++)
+        for (int i = 0; i < (*p_count); i++) // zistí ktoré IDcka neboli ciachované
         {
             found = false;
             for (int q = 0; q < ciach_count; q++)
