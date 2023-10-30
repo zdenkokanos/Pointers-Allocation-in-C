@@ -232,11 +232,7 @@ void f_c(int *p_y, char ***ID_pole, int *p_count, char ***DATE_pole)
                 {
                     int DATE_ciach_num = atoi((DATE_ciach[i])); // konvertuje string na interger
                     int DATE_pole_num = atoi((*DATE_pole)[q]);
-                    if (DATE_ciach_num == DATE_pole_num)
-                    {
-                        ciach_all_dates_match++;
-                    }
-                    else if (DATE_ciach_num != DATE_pole_num)
+                    if (DATE_ciach_num != DATE_pole_num)
                     {
                         result = DATE_pole_num - DATE_ciach_num;
                         result = abs(result);
@@ -265,7 +261,29 @@ void f_c(int *p_y, char ***ID_pole, int *p_count, char ***DATE_pole)
             }
             if (found == false)
             {
-                printf("ID. mer. modilu %s nebolo ciachované.\n", (*ID_pole)[i]);
+                printf("ID. mer. modulu %s nebolo ciachované.\n", (*ID_pole)[i]);
+            }
+            else
+            {
+                for (int i = 0; i < (ciach_count); i++)
+                {
+                    for (int q = 0; q < *p_count; q++)
+                    {
+                        if (strcmp((ID_ciach[i]), (*ID_pole)[q]) == 0)
+                        {
+                            int DATE_ciach_num = atoi((DATE_ciach[i])); // konvertuje string na interger
+                            int DATE_pole_num = atoi((*DATE_pole)[q]);
+                            if (DATE_ciach_num == DATE_pole_num)
+                            {
+                                ciach_all_dates_match++;
+                            }
+                        }
+                    }
+                }
+                if (ciach_all_dates_match == *p_count)
+                {
+                    printf("Dáta sú korektné.\n");
+                }
             }
         }
     }
