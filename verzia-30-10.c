@@ -369,6 +369,7 @@ void f_z(char ***ID_pole, char ***POS_pole, char ***TYP_pole, char ***HOD_pole, 
             }
         }
         printf("Vymazalo sa: %d záznamov!\n", erased_count);
+        *p_count = *p_count - erased_count;
     }
 }
 
