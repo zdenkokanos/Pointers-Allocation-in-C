@@ -293,8 +293,30 @@ void f_s()
 {
 }
 
-void f_h()
+void f_h(char ***ID_pole, char ***POS_pole, char ***TYP_pole, char ***HOD_pole, char ***CAS_pole, char ***DATE_pole, int *p_count)
 {
+    if (*ID_pole == NULL)
+    {
+        printf("Polia nie sú vytvorené.\n");
+    }
+    else
+    {
+        int q;
+        char types_mer_vel[6][2] = {"RD", "RM", "RO", "PI", "PE", "PA"};
+        int types_count = 0;
+        for (int i = 0; i < *p_count; i++)
+        {
+            for (q = 0; q < 6; q++)
+            {
+                if (strcmp(types_mer_vel[i][q], (*TYP_pole)[i]) == 0)
+                {
+                    types_count++;
+                }
+            }
+            printf("%s\t%d", types_mer_vel[i][q])
+
+        }
+    }
 }
 
 void f_z(char ***ID_pole, char ***POS_pole, char ***TYP_pole, char ***HOD_pole, char ***CAS_pole, char ***DATE_pole, int *p_count)
@@ -363,7 +385,7 @@ int main()
             f_s();
             break;
         case 'h':
-            f_h();
+            f_h(&ID_pole, &POS_pole, &TYP_pole, &HOD_pole, &CAS_pole, &DATE_pole, p_count);
             break;
         case 'z':
             f_z(&ID_pole, &POS_pole, &TYP_pole, &HOD_pole, &CAS_pole, &DATE_pole, p_count);
