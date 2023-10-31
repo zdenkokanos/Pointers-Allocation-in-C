@@ -305,7 +305,31 @@ void f_z(char ***ID_pole, char ***POS_pole, char ***TYP_pole, char ***HOD_pole, 
     }
     else
     {
+        char ID_input[5] = {0};
+        printf("Zadaj ID: ");
+        scanf("%s", ID_input);
+        int erased_count = 0;
+        for (int i = 0; i < *p_count; i++)
+        {
+            if (strcmp(ID_input, (*ID_pole)[i]) == 0)
+            {
+                free((*ID_pole)[i]);
+                free((*POS_pole)[i]);
+                free((*TYP_pole)[i]);
+                free((*HOD_pole)[i]);
+                free((*CAS_pole)[i]);
+                free((*DATE_pole)[i]);
+                (*ID_pole)[i] = NULL;
+                (*POS_pole)[i] = NULL;
+                (*TYP_pole)[i] = NULL;
+                (*HOD_pole)[i] = NULL;
+                (*CAS_pole)[i] = NULL;
+                (*DATE_pole)[i] = NULL;
+                erased_count++;
+            }
         }
+        printf("Vymazalo sa: %d záznamov!\n", erased_count);
+    }
 }
 
 int main()
