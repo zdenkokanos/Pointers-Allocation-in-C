@@ -295,28 +295,28 @@ void f_s()
 
 void f_h(char ***ID_pole, char ***POS_pole, char ***TYP_pole, char ***HOD_pole, char ***CAS_pole, char ***DATE_pole, int *p_count)
 {
-    if (*ID_pole == NULL)
-    {
-        printf("Polia nie sú vytvorené.\n");
-    }
-    else
-    {
-        int q;
-        char types_mer_vel[6][2] = {"RD", "RM", "RO", "PI", "PE", "PA"};
-        int types_count = 0;
-        for (int i = 0; i < *p_count; i++)
-        {
-            for (q = 0; q < 6; q++)
-            {
-                if (strcmp(types_mer_vel[i][q], (*TYP_pole)[i]) == 0)
-                {
-                    types_count++;
-                }
-            }
-            printf("%s\t%d", types_mer_vel[i][q])
+    // if (*ID_pole == NULL)
+    // {
+    //     printf("Polia nie sú vytvorené.\n");
+    // }
+    // else
+    // {
+    //     int q;
+    //     char types_mer_vel[6][2] = {"RD", "RM", "RO", "PI", "PE", "PA"};
+    //     int types_count = 0;
+    //     for (int i = 0; i < *p_count; i++)
+    //     {
+    //         for (q = 0; q < 6; q++)
+    //         {
+    //             if (strcmp(types_mer_vel[i][q], (*TYP_pole)[i]) == 0)
+    //             {
+    //                 types_count++;
+    //             }
+    //         }
+    //         printf("%s\t%d", types_mer_vel[i][q])
 
-        }
-    }
+    //     }
+    // }
 }
 
 void f_z(char ***ID_pole, char ***POS_pole, char ***TYP_pole, char ***HOD_pole, char ***CAS_pole, char ***DATE_pole, int *p_count)
