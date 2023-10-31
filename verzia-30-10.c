@@ -304,19 +304,34 @@ void f_h(char ***ID_pole, char ***POS_pole, char ***TYP_pole, char ***HOD_pole, 
         int q;
         char types_mer_vel[6][3] = {"RD", "RM", "RO", "PI", "PE", "PA"};
         int types_count = 0;
+        double max = 0;
+        double value;
+        double min = 9999999999999;
+        printf("Typ mer. vel\tPočetnosť\tMinimum\t   Maximum\n");
         for (int i = 0; i < 6; i++)
         {
             types_count = 0;
+            max = 0;
+            min = 999999999999;
             for (q = 0; q < *p_count; q++)
             {
                 if (strcmp(types_mer_vel[i], (*TYP_pole)[q]) == 0)
                 {
                     types_count++;
+                    value = strtod((*HOD_pole)[q], NULL);
+                    if (value > max)
+                    {
+                        max = value;
+                    }
+                    if (value < min)
+                    {
+                        min = value;
+                    }
                 }
             }
             if (types_count != 0)
             {
-                printf("%s\t%d\n", types_mer_vel[i], types_count);
+                printf("     %s\t\t    %d\t\t%.2lf\t    %.2lf\n", types_mer_vel[i], types_count, min, max);
             }
         }
     }
