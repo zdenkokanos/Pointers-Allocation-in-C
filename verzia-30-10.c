@@ -297,8 +297,15 @@ void f_h()
 {
 }
 
-void f_z()
+void f_z(char ***ID_pole, char ***POS_pole, char ***TYP_pole, char ***HOD_pole, char ***CAS_pole, char ***DATE_pole, int *p_count)
 {
+    if (*ID_pole == NULL)
+    {
+        printf("Polia nie sú vytvorené.\n");
+    }
+    else
+    {
+        }
 }
 
 int main()
@@ -335,7 +342,7 @@ int main()
             f_h();
             break;
         case 'z':
-            f_z();
+            f_z(&ID_pole, &POS_pole, &TYP_pole, &HOD_pole, &CAS_pole, &DATE_pole, p_count);
             break;
         case 'k':
             if (ID_pole != NULL)
