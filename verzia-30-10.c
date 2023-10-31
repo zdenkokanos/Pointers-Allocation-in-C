@@ -325,7 +325,7 @@ void f_h(char ***ID_pole, char ***POS_pole, char ***TYP_pole, char ***HOD_pole, 
                     }
                     if (value < min)
                     {
-                        min = value;
+                        min = value; // toto som okomentoval
                     }
                 }
             }
