@@ -326,10 +326,10 @@ void f_s(char ***ID_pole, char ***POS_pole, char ***TYP_pole, char ***HOD_pole, 
         long *S_POLE_CAS_DATE;
         char **S_LONGITUDE;
         char **S_LATITUDE;
+        char **S_POS;
         double *S_HODNOTA;
         double *S_LONGITUDE_double;
         double *S_LATITUDE_double;
-        char **S_POS;
         bool exists = false;
         int S_counter = 0;
         S_POLE_CAS_DATE = (long *)calloc(*p_count, sizeof(long));
@@ -342,8 +342,6 @@ void f_s(char ***ID_pole, char ***POS_pole, char ***TYP_pole, char ***HOD_pole, 
         for (int i = 0; i < *p_count; i++)
         {
             (S_POS)[i] = (char *)calloc(6, sizeof(char));
-            (S_LONGITUDE)[i] = (char *)calloc(8, sizeof(char));
-            (S_LATITUDE)[i] = (char *)calloc(8, sizeof(char));
         }
 
         for (int i = 0; i < *p_count; i++)
@@ -413,6 +411,20 @@ void f_s(char ***ID_pole, char ***POS_pole, char ***TYP_pole, char ***HOD_pole, 
             printf("Pre daný vstup nie je vytvorený txt súbor.");
         }
         printf("Pre daný vstup je vytvorený txt súbor.");
+
+        for (int i = 0; i < *p_count; i++)
+        {
+            free(S_POS[i]);
+        }
+        free(S_LATITUDE);
+        free(S_LONGITUDE);
+        free(S_POS);
+        free(S_HODNOTA);
+        free(S_POLE_CAS_DATE);
+        free(S_LONGITUDE_double);
+        free(S_LATITUDE_double);
+        free(S_LONGITUDE);
+        free(S_LATITUDE);
     }
 }
 
@@ -471,6 +483,7 @@ void f_z(char ***ID_pole, char ***POS_pole, char ***TYP_pole, char ***HOD_pole, 
         char ID_input[6] = {0};
         printf("Zadaj ID: ");
         scanf("%s", ID_input);
+        int this_erased_count = 0;
         for (int i = 0 + (*p_erased_count); i < *p_count; i++)
         {
             if (strcmp(ID_input, (*ID_pole)[i]) == 0)
@@ -487,11 +500,11 @@ void f_z(char ***ID_pole, char ***POS_pole, char ***TYP_pole, char ***HOD_pole, 
                 (*HOD_pole)[i] = NULL;
                 (*CAS_pole)[i] = NULL;
                 (*DATE_pole)[i] = NULL;
-
+                this_erased_count++;
                 (*p_erased_count)++;
             }
         }
-        printf("Vymazalo sa: %d záznamov!\n", *p_erased_count);
+        printf("Vymazalo sa: %d záznamov!\n", this_erased_count);
         //*p_count = *p_count - *p_erased_count;
     }
 }
