@@ -4,7 +4,7 @@
 #include <stdbool.h>
 #include <math.h>
 
-FILE *f_v(FILE *file_data, char ***ID_pole, char ***POS_pole, char ***TYP_pole, char ***HOD_pole, char ***CAS_pole, char ***DATE_pole, int *p_count) // otvorí súbor pre celý program
+FILE *f_v(FILE *file_data, char ***ID_pole, char ***POS_pole, char ***TYP_pole, char ***HOD_pole, char ***CAS_pole, char ***DATE_pole, int *p_count, bool *p_was_alokated) // otvorí súbor pre celý program
 {
     char data;             // komentár
     if (file_data == NULL) // ak súbor nebol otvorený
@@ -20,7 +20,7 @@ FILE *f_v(FILE *file_data, char ***ID_pole, char ***POS_pole, char ***TYP_pole, 
     else
     {
         fseek(file_data, 0, SEEK_SET); // Nastaví pozíciu súbora na začiatok
-        if (*ID_pole == NULL)          // ak súbor bol otvorený ale neboli alokované polia
+        if (*p_was_alokated == false)  // ak súbor bol otvorený ale neboli alokované polia
         {
             for (data = getc(file_data); data != EOF; data = getc(file_data)) // vypíše do terminálu záznamy priamo zo súboru
             {
@@ -31,26 +31,29 @@ FILE *f_v(FILE *file_data, char ***ID_pole, char ***POS_pole, char ***TYP_pole, 
         {
             for (int i = 0; i < *p_count; i++) // vypíše záznamy z týchto polí
             {
-                printf("%s", (*ID_pole)[i]);
-                printf("\n");
-                printf("%s", (*POS_pole)[i]);
-                printf("\n");
-                printf("%s", (*TYP_pole)[i]);
-                printf("\n");
-                printf("%s", (*HOD_pole)[i]);
-                printf("\n");
-                printf("%s", (*CAS_pole)[i]);
-                printf("\n");
-                printf("%s", (*DATE_pole)[i]);
-                printf("\n");
-                printf("\n");
+                if ((*ID_pole)[i] != NULL)
+                {
+                    printf("%s", (*ID_pole)[i]);
+                    printf("\n");
+                    printf("%s", (*POS_pole)[i]);
+                    printf("\n");
+                    printf("%s", (*TYP_pole)[i]);
+                    printf("\n");
+                    printf("%s", (*HOD_pole)[i]);
+                    printf("\n");
+                    printf("%s", (*CAS_pole)[i]);
+                    printf("\n");
+                    printf("%s", (*DATE_pole)[i]);
+                    printf("\n");
+                    printf("\n");
+                }
             }
         }
         return file_data; // opäť vracia adresu na súbor
     }
 }
 
-void f_n(FILE *file_data, char ***ID_pole, char ***POS_pole, char ***TYP_pole, char ***HOD_pole, char ***CAS_pole, char ***DATE_pole, int *p_count) // spočíta počet záznamov, dynamicky alokuje polia
+void f_n(FILE *file_data, char ***ID_pole, char ***POS_pole, char ***TYP_pole, char ***HOD_pole, char ***CAS_pole, char ***DATE_pole, int *p_count, bool *p_was_alokated) // spočíta počet záznamov, dynamicky alokuje polia
 {
     char data;
     int len_id = 5; // dĺžky riadkov v záznamoch, sú fixne dané a preto sú dané ako čísla
@@ -65,7 +68,7 @@ void f_n(FILE *file_data, char ***ID_pole, char ***POS_pole, char ***TYP_pole, c
     }
     else
     {
-        if (*ID_pole == NULL) // porovnávam jedno pole pretože ak nie je jedno alokované tak nie sú ani ostatné
+        if (*p_was_alokated == false) // porovnávam jedno pole pretože ak nie je jedno alokované tak nie sú ani ostatné
         {
             *p_count = 1;
             fseek(file_data, 0, SEEK_SET); // Nastaví pozíciu súbora na začiatok
@@ -112,6 +115,7 @@ void f_n(FILE *file_data, char ***ID_pole, char ***POS_pole, char ***TYP_pole, c
                 strncpy((*DATE_pole)[i], line, len_date);
                 fgets(line, sizeof(line), file_data); // načíta string v ktorom sa nachádza prázdny riadok, tento nezapisujem nikde, posunie pointer v súbore
             }
+            *p_was_alokated = true;
             printf("Nacitanie do pola prebehlo úspešne\n"); // pokial alokácia prebehne úspešne, vypíše...
         }
         else // ak už pole bolo alokované, bol stlačený príkaz "n"
@@ -140,6 +144,20 @@ void f_n(FILE *file_data, char ***ID_pole, char ***POS_pole, char ***TYP_pole, c
             *HOD_pole = NULL;
             *CAS_pole = NULL;
             *DATE_pole = NULL;
+            // fseek(file_data, 0, SEEK_SET); // Nastaví pozíciu súbora na začiatok
+            // if (*p_was_alokated == true)          // porovnávam jedno pole pretože ak nie je jedno alokované tak nie sú ani ostatné
+            // {
+            //     *p_count = 1;
+            //     fseek(file_data, 0, SEEK_SET); // Nastaví pozíciu súbora na začiatok
+            //     for (data = fgetc(file_data); data != EOF; data = fgetc(file_data))
+            //     {
+            //         if (data == '\n')
+            //         {
+            //             (*p_count)++; // spočítam počet riadkov
+            //         }
+            //     }
+            // }
+            //*p_count = (*p_count / 7);                              // v jednom zázname je 6 typov hodnôt + jeden prázdny riadok preto delím počet riadkov 7
             *ID_pole = (char **)calloc((*p_count), sizeof(char *)); // znovu alokujem pre všetky polia miesto v pamäti
             *POS_pole = (char **)calloc((*p_count), sizeof(char *));
             *TYP_pole = (char **)calloc((*p_count), sizeof(char *));
@@ -174,13 +192,14 @@ void f_n(FILE *file_data, char ***ID_pole, char ***POS_pole, char ***TYP_pole, c
                 strncpy((*DATE_pole)[i], line, len_date);
                 fgets(line, sizeof(line), file_data); // posúva pointer v súbore cez prázdny riadok
             }
+            *p_was_alokated = true;
         }
     }
 }
 
-void f_c(int *p_y, char ***ID_pole, int *p_count, char ***DATE_pole)
+void f_c(int *p_y, char ***ID_pole, int *p_count, char ***DATE_pole, bool *p_was_alokated)
 {
-    if (*ID_pole == NULL) // ak nebolo pole ešte alokované, nebolo stlačené "n" vypíšem....
+    if (*p_was_alokated == false) // ak nebolo pole ešte alokované, nebolo stlačené "n" vypíšem....
     {
         printf("Dynamické polia nie sú vytvorené\n");
     }
@@ -289,13 +308,24 @@ void f_c(int *p_y, char ***ID_pole, int *p_count, char ***DATE_pole)
     }
 }
 
-void f_s()
+void f_s(char ***ID_pole, char ***POS_pole, char ***TYP_pole, char ***HOD_pole, char ***CAS_pole, char ***DATE_pole, int *p_count, bool *p_was_alokated)
 {
+    // if (*p_was_alokated == false) // ak nebolo pole ešte alokované, nebolo stlačené "n" vypíšem....
+    // {
+    //     printf("Dynamické polia nie sú vytvorené\n");
+    // }
+    // else
+    // {
+    //     char ID_input[5 + 1] = {0};
+    //     char TYP_input[3 + 1] = {0};
+    //     printf("Zadaj ID a typ: ");
+    //     scanf("%s %s", ID_input, TYP_input);
+    // }
 }
 
-void f_h(char ***ID_pole, char ***POS_pole, char ***TYP_pole, char ***HOD_pole, char ***CAS_pole, char ***DATE_pole, int *p_count)
+void f_h(char ***ID_pole, char ***POS_pole, char ***TYP_pole, char ***HOD_pole, char ***CAS_pole, char ***DATE_pole, int *p_count, bool *p_was_alokated)
 {
-    if (*ID_pole == NULL)
+    if (*p_was_alokated == false)
     {
         printf("Polia nie sú vytvorené.\n");
     }
@@ -306,13 +336,13 @@ void f_h(char ***ID_pole, char ***POS_pole, char ***TYP_pole, char ***HOD_pole, 
         int types_count = 0;
         double max = 0;
         double value;
-        double min = 9999999999999;
+        double min;
         printf("Typ mer. vel\tPočetnosť\tMinimum\t   Maximum\n");
         for (int i = 0; i < 6; i++)
         {
             types_count = 0;
             max = 0;
-            min = 999999999999;
+            min = strtod((*HOD_pole)[0], NULL);
             for (q = 0; q < *p_count; q++)
             {
                 if (strcmp(types_mer_vel[i], (*TYP_pole)[q]) == 0)
@@ -337,19 +367,18 @@ void f_h(char ***ID_pole, char ***POS_pole, char ***TYP_pole, char ***HOD_pole, 
     }
 }
 
-void f_z(char ***ID_pole, char ***POS_pole, char ***TYP_pole, char ***HOD_pole, char ***CAS_pole, char ***DATE_pole, int *p_count)
+void f_z(char ***ID_pole, char ***POS_pole, char ***TYP_pole, char ***HOD_pole, char ***CAS_pole, char ***DATE_pole, int *p_count, bool *p_was_alokated, int *p_erased_count)
 {
-    if (*ID_pole == NULL)
+    if (*p_was_alokated == false)
     {
         printf("Polia nie sú vytvorené.\n");
     }
     else
     {
-        char ID_input[5] = {0};
+        char ID_input[6] = {0};
         printf("Zadaj ID: ");
         scanf("%s", ID_input);
-        int erased_count = 0;
-        for (int i = 0; i < *p_count; i++)
+        for (int i = 0 + (*p_erased_count); i < *p_count; i++)
         {
             if (strcmp(ID_input, (*ID_pole)[i]) == 0)
             {
@@ -365,11 +394,11 @@ void f_z(char ***ID_pole, char ***POS_pole, char ***TYP_pole, char ***HOD_pole, 
                 (*HOD_pole)[i] = NULL;
                 (*CAS_pole)[i] = NULL;
                 (*DATE_pole)[i] = NULL;
-                erased_count++;
+                (*p_erased_count)++;
             }
         }
-        printf("Vymazalo sa: %d záznamov!\n", erased_count);
-        *p_count = *p_count - erased_count;
+        printf("Vymazalo sa: %d záznamov!\n", *p_erased_count);
+        //*p_count = *p_count - *p_erased_count;
     }
 }
 
@@ -379,6 +408,10 @@ int main()
     int count;
     int y;
     int *p_count = &count;
+    int erase_count;
+    int *p_erase_count = &erase_count;
+    bool was_alokated = false;
+    bool *p_was_alokated = &was_alokated;
     FILE *file_data = NULL;
     char **ID_pole = NULL;   // spravím pointer pre string do ktorého môže ísť 10 znakov //Id meracieho modulu
     char **POS_pole = NULL;  // Pozícia modulu
@@ -392,25 +425,25 @@ int main()
         switch (vstup)
         {
         case 'v':
-            file_data = f_v(file_data, &ID_pole, &POS_pole, &TYP_pole, &HOD_pole, &CAS_pole, &DATE_pole, p_count);
+            file_data = f_v(file_data, &ID_pole, &POS_pole, &TYP_pole, &HOD_pole, &CAS_pole, &DATE_pole, p_count, p_was_alokated);
             break;
         case 'n':
-            f_n(file_data, &ID_pole, &POS_pole, &TYP_pole, &HOD_pole, &CAS_pole, &DATE_pole, p_count);
+            f_n(file_data, &ID_pole, &POS_pole, &TYP_pole, &HOD_pole, &CAS_pole, &DATE_pole, p_count, p_was_alokated);
             break;
         case 'c':
-            f_c(&y, &ID_pole, p_count, &DATE_pole);
+            f_c(&y, &ID_pole, p_count, &DATE_pole, p_was_alokated);
             break;
         case 's':
-            f_s();
+            f_s(&ID_pole, &POS_pole, &TYP_pole, &HOD_pole, &CAS_pole, &DATE_pole, p_count, p_was_alokated);
             break;
         case 'h':
-            f_h(&ID_pole, &POS_pole, &TYP_pole, &HOD_pole, &CAS_pole, &DATE_pole, p_count);
+            f_h(&ID_pole, &POS_pole, &TYP_pole, &HOD_pole, &CAS_pole, &DATE_pole, p_count, p_was_alokated);
             break;
         case 'z':
-            f_z(&ID_pole, &POS_pole, &TYP_pole, &HOD_pole, &CAS_pole, &DATE_pole, p_count);
+            f_z(&ID_pole, &POS_pole, &TYP_pole, &HOD_pole, &CAS_pole, &DATE_pole, p_count, p_was_alokated, p_erase_count);
             break;
         case 'k':
-            if (ID_pole != NULL)
+            if (was_alokated == true)
             {
                 for (int i = 0; i < *p_count; i++) // dealokujem všetky polia
                 {
@@ -436,12 +469,10 @@ int main()
                 DATE_pole = NULL;
 
                 return 0;
-                break;
             }
             else
             {
                 return 0;
-                break;
             }
 
         default:
@@ -449,5 +480,4 @@ int main()
             break;
         }
     }
-    return 0;
 }
