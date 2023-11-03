@@ -394,6 +394,7 @@ void f_z(char ***ID_pole, char ***POS_pole, char ***TYP_pole, char ***HOD_pole, 
                 (*HOD_pole)[i] = NULL;
                 (*CAS_pole)[i] = NULL;
                 (*DATE_pole)[i] = NULL;
+                
                 (*p_erased_count)++;
             }
         }
