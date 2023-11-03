@@ -4,6 +4,13 @@
 #include <stdbool.h>
 #include <math.h>
 
+void swap(long *xp, long *yp)
+{
+    long temp = *xp;
+    *xp = *yp;
+    *yp = temp;
+}
+
 FILE *f_v(FILE *file_data, char ***ID_pole, char ***POS_pole, char ***TYP_pole, char ***HOD_pole, char ***CAS_pole, char ***DATE_pole, int *p_count, bool *p_was_alokated) // otvorí súbor pre celý program
 {
     char data;
@@ -311,17 +318,89 @@ void f_c(int *p_y, char ***ID_pole, int *p_count, char ***DATE_pole, bool *p_was
 
 void f_s(char ***ID_pole, char ***POS_pole, char ***TYP_pole, char ***HOD_pole, char ***CAS_pole, char ***DATE_pole, int *p_count, bool *p_was_alokated)
 {
-    // if (*p_was_alokated == false) // ak nebolo pole ešte alokované, nebolo stlačené "n" vypíšem....
-    // {
-    //     printf("Dynamické polia nie sú vytvorené\n");
-    // }
-    // else
-    // {
-    //     char ID_input[5 + 1] = {0};
-    //     char TYP_input[3 + 1] = {0};
-    //     printf("Zadaj ID a typ: ");
-    //     scanf("%s %s", ID_input, TYP_input);
-    // }
+    if (*p_was_alokated == false) // ak nebolo pole ešte alokované, nebolo stlačené "n" vypíšem....
+    {
+        printf("Dynamické polia nie sú vytvorené\n");
+    }
+    else
+    {
+        char ID_input[6] = {0};
+        char TYP_input[4] = {0};
+        char *temp = {0};
+        printf("Zadaj ID a typ: ");
+        scanf("%s %s", ID_input, TYP_input);
+        long *S_POLE_CAS_DATE;
+        char **S_LONGITUDE;
+        char **S_LATITUDE;
+        double *S_HODNOTA;
+        double *S_LONGITUDE_double;
+        double *S_LATITUDE_double;
+        char **S_POS;
+        bool exists = false;
+        int S_counter = 0;
+        S_POLE_CAS_DATE = (long *)calloc(*p_count, sizeof(long));
+        S_POS = (char **)calloc((*p_count), sizeof(char *));
+        S_LONGITUDE = (char **)calloc((*p_count), sizeof(char *));
+        S_LATITUDE = (char **)calloc((*p_count), sizeof(char *));
+        S_HODNOTA = (double *)calloc(*p_count, sizeof(double));
+        S_LONGITUDE_double = (double *)calloc(*p_count, sizeof(double));
+        S_LATITUDE_double = (double *)calloc(*p_count, sizeof(double));
+        for (int i = 0; i < *p_count; i++)
+        {
+            (S_POS)[i] = (char *)calloc(6, sizeof(char));
+            (S_LONGITUDE)[i] = (char *)calloc(8, sizeof(char));
+            (S_LATITUDE)[i] = (char *)calloc(8, sizeof(char));
+        }
+
+        for (int i = 0; i < *p_count; i++)
+        {
+            if ((strcmp(ID_input, (*ID_pole)[i]) == 0) && (strcmp(TYP_input, (*TYP_pole)[i]) == 0))
+            {
+                temp = strcat((*DATE_pole)[i], (*CAS_pole)[i]);
+                S_POLE_CAS_DATE[i] = atol(temp);
+                strcpy(S_POS[i], (*POS_pole)[i]);
+                S_HODNOTA[i] = strtod((*HOD_pole)[i], NULL);
+                printf("%s\n", S_POS[i]);
+                char *token = strtok((S_POS)[i], "+-");
+                S_LATITUDE[i] = token;
+                token = strtok(NULL, "+");
+                S_LONGITUDE[i] = token;
+                S_LATITUDE_double[i] = (strtod(S_LATITUDE[i], NULL) / 10000);
+                S_LONGITUDE_double[i] = (strtod(S_LONGITUDE[i], NULL) / 10000);
+                S_counter++;
+                printf("%ld\n", S_POLE_CAS_DATE[i]);
+                printf("%lf\n", S_HODNOTA[i]);
+                printf("%lf\n", S_LATITUDE_double[i]);
+                printf("%lf\n", S_LONGITUDE_double[i]);
+                printf("\n");
+                exists = true;
+            }
+        }
+        if (exists == false)
+        {
+            printf("Pre dany vstup neexistujú záznamy.\n");
+        }
+
+
+
+        for (int i = 0; i < S_counter - 1; i++)
+        {
+            int pom = i;
+            for (int j = i + 1; j < S_counter; j++)
+            {
+                if (S_POLE_CAS_DATE[j] > S_POLE_CAS_DATE[pom])
+                {
+                    pom = j;
+                }
+                swap(&S_POLE_CAS_DATE[pom], &S_POLE_CAS_DATE[i]);
+            }
+        }
+
+        for (int i = 0; i < S_counter; i++)
+        {
+            printf("usporiadane: %ld\n", S_POLE_CAS_DATE[i]);
+        }
+    }
 }
 
 void f_h(char ***ID_pole, char ***POS_pole, char ***TYP_pole, char ***HOD_pole, char ***CAS_pole, char ***DATE_pole, int *p_count, bool *p_was_alokated)
@@ -356,7 +435,7 @@ void f_h(char ***ID_pole, char ***POS_pole, char ***TYP_pole, char ***HOD_pole, 
                     }
                     if (value < min)
                     {
-                        min = value; // toto som okomentoval
+                        min = value;
                     }
                 }
             }
@@ -400,7 +479,7 @@ void f_z(char ***ID_pole, char ***POS_pole, char ***TYP_pole, char ***HOD_pole, 
             }
         }
         printf("Vymazalo sa: %d záznamov!\n", *p_erased_count);
-        //*p_count = *p_count - *p_erased_count; komentár
+        //*p_count = *p_count - *p_erased_count;
     }
 }
 
