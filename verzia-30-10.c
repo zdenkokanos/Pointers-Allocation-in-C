@@ -4,13 +4,6 @@
 #include <stdbool.h>
 #include <math.h>
 
-void swap(long *xp, long *yp)
-{
-    long temp = *xp;
-    *xp = *yp;
-    *yp = temp;
-}
-
 FILE *f_v(FILE *file_data, char ***ID_pole, char ***POS_pole, char ***TYP_pole, char ***HOD_pole, char ***CAS_pole, char ***DATE_pole, int *p_count, bool *p_was_alokated) // otvorí súbor pre celý program
 {
     char data;
@@ -327,6 +320,7 @@ void f_s(char ***ID_pole, char ***POS_pole, char ***TYP_pole, char ***HOD_pole, 
         char ID_input[6] = {0};
         char TYP_input[4] = {0};
         char *temp = {0};
+        temp = (char *)calloc(1, sizeof(char));
         printf("Zadaj ID a typ: ");
         scanf("%s %s", ID_input, TYP_input);
         long *S_POLE_CAS_DATE;
@@ -354,25 +348,20 @@ void f_s(char ***ID_pole, char ***POS_pole, char ***TYP_pole, char ***HOD_pole, 
 
         for (int i = 0; i < *p_count; i++)
         {
+            temp = NULL;
             if ((strcmp(ID_input, (*ID_pole)[i]) == 0) && (strcmp(TYP_input, (*TYP_pole)[i]) == 0))
             {
                 temp = strcat((*DATE_pole)[i], (*CAS_pole)[i]);
-                S_POLE_CAS_DATE[i] = atol(temp);
-                strcpy(S_POS[i], (*POS_pole)[i]);
-                S_HODNOTA[i] = strtod((*HOD_pole)[i], NULL);
-                printf("%s\n", S_POS[i]);
-                char *token = strtok((S_POS)[i], "+-");
-                S_LATITUDE[i] = token;
-                token = strtok(NULL, "+");
-                S_LONGITUDE[i] = token;
-                S_LATITUDE_double[i] = (strtod(S_LATITUDE[i], NULL) / 10000);
-                S_LONGITUDE_double[i] = (strtod(S_LONGITUDE[i], NULL) / 10000);
+                S_POLE_CAS_DATE[S_counter] = atol(temp);
+                strcpy(S_POS[S_counter], (*POS_pole)[i]);
+                S_HODNOTA[S_counter] = strtod((*HOD_pole)[i], NULL);
+                char *token = strtok((S_POS)[S_counter], "+-");
+                S_LATITUDE[S_counter] = token;
+                token = strtok(NULL, "+-");
+                S_LONGITUDE[S_counter] = token;
+                S_LATITUDE_double[S_counter] = (strtod(S_LATITUDE[S_counter], NULL) / 10000);
+                S_LONGITUDE_double[S_counter] = (strtod(S_LONGITUDE[S_counter], NULL) / 10000);
                 S_counter++;
-                printf("%ld\n", S_POLE_CAS_DATE[i]);
-                printf("%lf\n", S_HODNOTA[i]);
-                printf("%lf\n", S_LATITUDE_double[i]);
-                printf("%lf\n", S_LONGITUDE_double[i]);
-                printf("\n");
                 exists = true;
             }
         }
@@ -380,26 +369,50 @@ void f_s(char ***ID_pole, char ***POS_pole, char ***TYP_pole, char ***HOD_pole, 
         {
             printf("Pre dany vstup neexistujú záznamy.\n");
         }
-
-
+        long temporar_date;
+        double temporar_lat_lon;
 
         for (int i = 0; i < S_counter - 1; i++)
         {
-            int pom = i;
             for (int j = i + 1; j < S_counter; j++)
             {
-                if (S_POLE_CAS_DATE[j] > S_POLE_CAS_DATE[pom])
+                if (S_POLE_CAS_DATE[j] < S_POLE_CAS_DATE[i])
                 {
-                    pom = j;
+                    temporar_date = S_POLE_CAS_DATE[i];
+                    S_POLE_CAS_DATE[i] = S_POLE_CAS_DATE[j];
+                    S_POLE_CAS_DATE[j] = temporar_date;
+
+                    temporar_lat_lon = S_LATITUDE_double[i];
+                    S_LATITUDE_double[i] = S_LATITUDE_double[j];
+                    S_LATITUDE_double[j] = temporar_lat_lon;
+
+                    temporar_lat_lon = S_LONGITUDE_double[i];
+                    S_LONGITUDE_double[i] = S_LONGITUDE_double[j];
+                    S_LONGITUDE_double[j] = temporar_lat_lon;
+
+                    temporar_lat_lon = S_HODNOTA[i];
+                    S_HODNOTA[i] = S_HODNOTA[j];
+                    S_HODNOTA[j] = temporar_lat_lon;
                 }
-                swap(&S_POLE_CAS_DATE[pom], &S_POLE_CAS_DATE[i]);
             }
         }
 
+        FILE *fw;
+        fw = fopen("vystup.txt", "w");
+        if (fw == NULL)
+        {
+            printf("Pre daný vstup nie je vytvorený txt súbor.");
+        }
         for (int i = 0; i < S_counter; i++)
         {
-            printf("usporiadane: %ld\n", S_POLE_CAS_DATE[i]);
+            fprintf(fw, "%ld\t%.5lf\t+%.4lf\t+%.4lf\n", S_POLE_CAS_DATE[i], S_HODNOTA[i], S_LATITUDE_double[i], S_LONGITUDE_double[i]);
         }
+        int close_result = fclose(fw);
+        if (close_result == 1)
+        {
+            printf("Pre daný vstup nie je vytvorený txt súbor.");
+        }
+        printf("Pre daný vstup je vytvorený txt súbor.");
     }
 }
 
