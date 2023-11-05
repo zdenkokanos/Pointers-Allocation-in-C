@@ -31,22 +31,19 @@ FILE *f_v(FILE *file_data, char ***ID_pole, char ***POS_pole, char ***TYP_pole, 
         {
             for (int i = 0; i < *p_count; i++) // vypíše záznamy z týchto polí
             {
-                if ((*ID_pole)[i] != NULL)
-                {
-                    printf("%s", (*ID_pole)[i]);
-                    printf("\n");
-                    printf("%s", (*POS_pole)[i]);
-                    printf("\n");
-                    printf("%s", (*TYP_pole)[i]);
-                    printf("\n");
-                    printf("%s", (*HOD_pole)[i]);
-                    printf("\n");
-                    printf("%s", (*CAS_pole)[i]);
-                    printf("\n");
-                    printf("%s", (*DATE_pole)[i]);
-                    printf("\n");
-                    printf("\n");
-                }
+                printf("%s", (*ID_pole)[i]);
+                printf("\n");
+                printf("%s", (*POS_pole)[i]);
+                printf("\n");
+                printf("%s", (*TYP_pole)[i]);
+                printf("\n");
+                printf("%s", (*HOD_pole)[i]);
+                printf("\n");
+                printf("%s", (*CAS_pole)[i]);
+                printf("\n");
+                printf("%s", (*DATE_pole)[i]);
+                printf("\n");
+                printf("\n");
             }
         }
         return file_data; // opäť vracia adresu na súbor
@@ -367,64 +364,64 @@ void f_s(char ***ID_pole, char ***POS_pole, char ***TYP_pole, char ***HOD_pole, 
         {
             printf("Pre dany vstup neexistujú záznamy.\n");
         }
-        long temporar_date;
-        double temporar_lat_lon;
-
-        for (int i = 0; i < S_counter - 1; i++)
+        else
         {
-            for (int j = i + 1; j < S_counter; j++)
+            long temporar_date;
+            double temporar_lat_lon;
+
+            for (int i = 0; i < S_counter - 1; i++)
             {
-                if (S_POLE_CAS_DATE[j] < S_POLE_CAS_DATE[i])
+                for (int j = i + 1; j < S_counter; j++)
                 {
-                    temporar_date = S_POLE_CAS_DATE[i];
-                    S_POLE_CAS_DATE[i] = S_POLE_CAS_DATE[j];
-                    S_POLE_CAS_DATE[j] = temporar_date;
+                    if (S_POLE_CAS_DATE[j] < S_POLE_CAS_DATE[i])
+                    {
+                        temporar_date = S_POLE_CAS_DATE[i];
+                        S_POLE_CAS_DATE[i] = S_POLE_CAS_DATE[j];
+                        S_POLE_CAS_DATE[j] = temporar_date;
 
-                    temporar_lat_lon = S_LATITUDE_double[i];
-                    S_LATITUDE_double[i] = S_LATITUDE_double[j];
-                    S_LATITUDE_double[j] = temporar_lat_lon;
+                        temporar_lat_lon = S_LATITUDE_double[i];
+                        S_LATITUDE_double[i] = S_LATITUDE_double[j];
+                        S_LATITUDE_double[j] = temporar_lat_lon;
 
-                    temporar_lat_lon = S_LONGITUDE_double[i];
-                    S_LONGITUDE_double[i] = S_LONGITUDE_double[j];
-                    S_LONGITUDE_double[j] = temporar_lat_lon;
+                        temporar_lat_lon = S_LONGITUDE_double[i];
+                        S_LONGITUDE_double[i] = S_LONGITUDE_double[j];
+                        S_LONGITUDE_double[j] = temporar_lat_lon;
 
-                    temporar_lat_lon = S_HODNOTA[i];
-                    S_HODNOTA[i] = S_HODNOTA[j];
-                    S_HODNOTA[j] = temporar_lat_lon;
+                        temporar_lat_lon = S_HODNOTA[i];
+                        S_HODNOTA[i] = S_HODNOTA[j];
+                        S_HODNOTA[j] = temporar_lat_lon;
+                    }
                 }
             }
-        }
+            FILE *fw;
+            fw = fopen("vystup.txt", "w");
+            if (fw == NULL)
+            {
+                printf("Pre daný vstup nie je vytvorený txt súbor.\n");
+            }
+            for (int i = 0; i < S_counter; i++)
+            {
+                fprintf(fw, "%ld\t%.5lf\t+%.4lf\t+%.4lf\n", S_POLE_CAS_DATE[i], S_HODNOTA[i], S_LATITUDE_double[i], S_LONGITUDE_double[i]);
+            }
+            int close_result = fclose(fw);
+            if (close_result == 1)
+            {
+                printf("Pre daný vstup nie je vytvorený txt súbor.\n");
+            }
+            printf("Pre daný vstup je vytvorený txt súbor.\n");
 
-        FILE *fw;
-        fw = fopen("vystup.txt", "w");
-        if (fw == NULL)
-        {
-            printf("Pre daný vstup nie je vytvorený txt súbor.");
+            for (int i = 0; i < *p_count; i++)
+            {
+                free(S_POS[i]);
+            }
+            free(S_LATITUDE);
+            free(S_LONGITUDE);
+            free(S_POS);
+            free(S_HODNOTA);
+            free(S_POLE_CAS_DATE);
+            free(S_LONGITUDE_double);
+            free(S_LATITUDE_double);
         }
-        for (int i = 0; i < S_counter; i++)
-        {
-            fprintf(fw, "%ld\t%.5lf\t+%.4lf\t+%.4lf\n", S_POLE_CAS_DATE[i], S_HODNOTA[i], S_LATITUDE_double[i], S_LONGITUDE_double[i]);
-        }
-        int close_result = fclose(fw);
-        if (close_result == 1)
-        {
-            printf("Pre daný vstup nie je vytvorený txt súbor.");
-        }
-        printf("Pre daný vstup je vytvorený txt súbor.");
-
-        for (int i = 0; i < *p_count; i++)
-        {
-            free(S_POS[i]);
-        }
-        free(S_LATITUDE);
-        free(S_LONGITUDE);
-        free(S_POS);
-        free(S_HODNOTA);
-        free(S_POLE_CAS_DATE);
-        free(S_LONGITUDE_double);
-        free(S_LATITUDE_double);
-        free(S_LONGITUDE);
-        free(S_LATITUDE);
     }
 }
 
@@ -484,28 +481,65 @@ void f_z(char ***ID_pole, char ***POS_pole, char ***TYP_pole, char ***HOD_pole, 
         printf("Zadaj ID: ");
         scanf("%s", ID_input);
         int this_erased_count = 0;
-        for (int i = 0 + (*p_erased_count); i < *p_count; i++)
+        int count_holder = *p_count;
+        int *remove_index = (int *)malloc(*p_count * sizeof(int));
+        for (int i = 0; i < count_holder; i++)
         {
             if (strcmp(ID_input, (*ID_pole)[i]) == 0)
             {
-                free((*ID_pole)[i]);
-                free((*POS_pole)[i]);
-                free((*TYP_pole)[i]);
-                free((*HOD_pole)[i]);
-                free((*CAS_pole)[i]);
-                free((*DATE_pole)[i]);
-                (*ID_pole)[i] = NULL;
-                (*POS_pole)[i] = NULL;
-                (*TYP_pole)[i] = NULL;
-                (*HOD_pole)[i] = NULL;
-                (*CAS_pole)[i] = NULL;
-                (*DATE_pole)[i] = NULL;
-                this_erased_count++;
-                (*p_erased_count)++;
+                remove_index[this_erased_count] = i;
+                if (*p_count != 1)
+                {
+                    for (int j = i; j < (*p_count) - 1; j++)
+                    {
+                        strcpy((*ID_pole)[j], (*ID_pole)[j + 1]);
+                        strcpy((*POS_pole)[j], (*POS_pole)[j + 1]);
+                        strcpy((*HOD_pole)[j], (*HOD_pole)[j + 1]);
+                        strcpy((*CAS_pole)[j], (*CAS_pole)[j + 1]);
+                        strcpy((*DATE_pole)[j], (*DATE_pole)[j + 1]);
+                        strcpy((*TYP_pole)[j], (*TYP_pole)[j + 1]);
+                        if (i != 0)
+                        {
+                            i--;
+                        }
+                    }
+                    if (i == 0)
+                    {
+                        i--;
+                    }
+                    this_erased_count++;
+                }
+                else if(*p_count == 1)
+                {
+                    (*p_count) = 0;
+                    this_erased_count = 1;
+                }
+                if (*p_count - this_erased_count == 0){
+                    break;
+                }
             }
         }
+
+        (*p_count) -= this_erased_count;
+
+        for (int i = count_holder - 1; i > count_holder - this_erased_count - 1; i--)
+        {
+            free((*ID_pole)[i]);
+            free((*POS_pole)[i]);
+            free((*HOD_pole)[i]);
+            free((*CAS_pole)[i]);
+            free((*DATE_pole)[i]);
+            free((*TYP_pole)[i]);
+        }
+
+        *ID_pole = (char **)realloc(*ID_pole, *p_count * sizeof(char *));
+        *POS_pole = (char **)realloc(*POS_pole, *p_count * sizeof(char *));
+        *HOD_pole = (char **)realloc(*HOD_pole, *p_count * sizeof(char *));
+        *CAS_pole = (char **)realloc(*CAS_pole, *p_count * sizeof(char *));
+        *DATE_pole = (char **)realloc(*DATE_pole, *p_count * sizeof(char *));
+        *TYP_pole = (char **)realloc(*TYP_pole, *p_count * sizeof(char *));
         printf("Vymazalo sa: %d záznamov!\n", this_erased_count);
-        //*p_count = *p_count - *p_erased_count;
+        free(remove_index);
     }
 }
 
@@ -531,60 +565,60 @@ int main()
         scanf(" %c", &vstup);
         switch (vstup)
         {
-        case 'v':
-            file_data = f_v(file_data, &ID_pole, &POS_pole, &TYP_pole, &HOD_pole, &CAS_pole, &DATE_pole, p_count, p_was_alokated);
-            break;
-        case 'n':
-            f_n(file_data, &ID_pole, &POS_pole, &TYP_pole, &HOD_pole, &CAS_pole, &DATE_pole, p_count, p_was_alokated, p_erase_count);
-            break;
-        case 'c':
-            f_c(&y, &ID_pole, p_count, &DATE_pole, p_was_alokated);
-            break;
-        case 's':
-            f_s(&ID_pole, &POS_pole, &TYP_pole, &HOD_pole, &CAS_pole, &DATE_pole, p_count, p_was_alokated);
-            break;
-        case 'h':
-            f_h(&ID_pole, &POS_pole, &TYP_pole, &HOD_pole, &CAS_pole, &DATE_pole, p_count, p_was_alokated);
-            break;
-        case 'z':
-            f_z(&ID_pole, &POS_pole, &TYP_pole, &HOD_pole, &CAS_pole, &DATE_pole, p_count, p_was_alokated, p_erase_count);
-            break;
-        case 'k':
-            if (was_alokated == true)
-            {
-                for (int i = 0; i < *p_count; i++) // dealokujem všetky polia
+            case 'v':
+                file_data = f_v(file_data, &ID_pole, &POS_pole, &TYP_pole, &HOD_pole, &CAS_pole, &DATE_pole, p_count, p_was_alokated);
+                break;
+            case 'n':
+                f_n(file_data, &ID_pole, &POS_pole, &TYP_pole, &HOD_pole, &CAS_pole, &DATE_pole, p_count, p_was_alokated, p_erase_count);
+                break;
+            case 'c':
+                f_c(&y, &ID_pole, p_count, &DATE_pole, p_was_alokated);
+                break;
+            case 's':
+                f_s(&ID_pole, &POS_pole, &TYP_pole, &HOD_pole, &CAS_pole, &DATE_pole, p_count, p_was_alokated);
+                break;
+            case 'h':
+                f_h(&ID_pole, &POS_pole, &TYP_pole, &HOD_pole, &CAS_pole, &DATE_pole, p_count, p_was_alokated);
+                break;
+            case 'z':
+                f_z(&ID_pole, &POS_pole, &TYP_pole, &HOD_pole, &CAS_pole, &DATE_pole, p_count, p_was_alokated, p_erase_count);
+                break;
+            case 'k':
+                if (was_alokated == true)
                 {
-                    free((ID_pole)[i]);
-                    free((POS_pole)[i]);
-                    free((TYP_pole)[i]);
-                    free((HOD_pole)[i]);
-                    free((CAS_pole)[i]);
-                    free((DATE_pole)[i]);
+                    for (int i = 0; i < *p_count; i++) // dealokujem všetky polia
+                    {
+                        free((ID_pole)[i]);
+                        free((POS_pole)[i]);
+                        free((TYP_pole)[i]);
+                        free((HOD_pole)[i]);
+                        free((CAS_pole)[i]);
+                        free((DATE_pole)[i]);
+                    }
+
+                    free(ID_pole); // dealokujem všetky polia
+                    free(POS_pole);
+                    free(TYP_pole);
+                    free(HOD_pole);
+                    free(CAS_pole);
+                    free(DATE_pole);
+                    ID_pole = NULL; // všetky hodnoty v poliach nastavím na null aby nenastali leaky
+                    POS_pole = NULL;
+                    TYP_pole = NULL;
+                    HOD_pole = NULL;
+                    CAS_pole = NULL;
+                    DATE_pole = NULL;
+
+                    return 0;
+                }
+                else
+                {
+                    return 0;
                 }
 
-                free(ID_pole); // dealokujem všetky polia
-                free(POS_pole);
-                free(TYP_pole);
-                free(HOD_pole);
-                free(CAS_pole);
-                free(DATE_pole);
-                ID_pole = NULL; // všetky hodnoty v poliach nastavím na null aby nenastali leaky
-                POS_pole = NULL;
-                TYP_pole = NULL;
-                HOD_pole = NULL;
-                CAS_pole = NULL;
-                DATE_pole = NULL;
-
-                return 0;
-            }
-            else
-            {
-                return 0;
-            }
-
-        default:
-            printf("Nesprávny znak skúste znova: \n");
-            break;
+            default:
+                printf("Nesprávny znak skúste znova: \n");
+                break;
         }
     }
 }
