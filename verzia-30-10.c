@@ -487,47 +487,41 @@ void f_z(char ***ID_pole, char ***POS_pole, char ***TYP_pole, char ***HOD_pole, 
         {
             if (strcmp(ID_input, (*ID_pole)[i]) == 0)
             {
-                removed_index = i;
-            }
-        }
-        for (int i = 0; i < count_holder; i++)
-        {
-            if (strcmp(ID_input, (*ID_pole)[i]) == 0)
-            {
-                if (*p_count != 1)
+                if (strcmp(ID_input, (*ID_pole)[count_holder - 1]) == 0)
                 {
-                    for (int j = i; j < (*p_count) - 1; j++)
-                    {
-                        strcpy((*ID_pole)[j], (*ID_pole)[j + 1]);
-                        strcpy((*POS_pole)[j], (*POS_pole)[j + 1]);
-                        strcpy((*HOD_pole)[j], (*HOD_pole)[j + 1]);
-                        strcpy((*CAS_pole)[j], (*CAS_pole)[j + 1]);
-                        strcpy((*DATE_pole)[j], (*DATE_pole)[j + 1]);
-                        strcpy((*TYP_pole)[j], (*TYP_pole)[j + 1]);
-                        if (i != 0 && removed_index == *p_count)
-                        {
-                            i--;
-                        }
-                    }
-                    if (i == 0)
-                    {
-                        i--;
-                    }
+                    (*p_count)--;
                     this_erased_count++;
                 }
-                else if (*p_count == 1)
+                else
                 {
-                    (*p_count) = 0;
-                    this_erased_count = 1;
-                }
-                if (*p_count - this_erased_count == 0)
-                {
-                    break;
+                    if (count_holder - 1 != i)
+                    {
+                        if (*p_count != 1)
+                        {
+                            for (int j = i; j < (*p_count) - 1; j++)
+                            {
+                                strcpy((*ID_pole)[j], (*ID_pole)[j + 1]);
+                                strcpy((*POS_pole)[j], (*POS_pole)[j + 1]);
+                                strcpy((*HOD_pole)[j], (*HOD_pole)[j + 1]);
+                                strcpy((*CAS_pole)[j], (*CAS_pole)[j + 1]);
+                                strcpy((*DATE_pole)[j], (*DATE_pole)[j + 1]);
+                                strcpy((*TYP_pole)[j], (*TYP_pole)[j + 1]);
+                            }
+                            this_erased_count++;
+                            (*p_count)--;
+                            if (strcmp(ID_input, (*ID_pole)[i]) == 0)
+                            {
+                                i--;
+                            }
+                        }
+                    }
+                    else
+                    {
+                        this_erased_count = 1;
+                    }
                 }
             }
         }
-
-        (*p_count) -= this_erased_count;
 
         for (int i = count_holder - 1; i > count_holder - this_erased_count - 1; i--)
         {
