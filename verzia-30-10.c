@@ -431,6 +431,10 @@ void f_h(char ***ID_pole, char ***POS_pole, char ***TYP_pole, char ***HOD_pole, 
     {
         printf("Polia nie sú vytvorené.\n");
     }
+    else if ((*p_count) == 0)
+    {
+        printf("Všetky polia už boli vymazané.\n");
+    }
     else
     {
         int q;
