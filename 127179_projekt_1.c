@@ -303,6 +303,13 @@ void f_c(int *p_y, char ***ID_pole, int *p_count, char ***DATE_pole, bool *p_was
                 }
             }
         }
+        for (int i = 0; i < (ciach_count); i++)
+        {
+            free(DATE_ciach[i]);
+            free(ID_ciach[i]);
+        }
+        free(DATE_ciach);
+        free(ID_ciach);
     }
 }
 
@@ -485,7 +492,7 @@ void f_z(char ***ID_pole, char ***POS_pole, char ***TYP_pole, char ***HOD_pole, 
         printf("Zadaj ID: ");
         scanf("%s", ID_input);
         int this_erased_count = 0;
-        int count_holder = *p_count;
+        int count_holder = *p_count; 
         int removed_index;
         for (int i = 0; i < count_holder; i++)
         {
@@ -513,7 +520,7 @@ void f_z(char ***ID_pole, char ***POS_pole, char ***TYP_pole, char ***HOD_pole, 
                             }
                             this_erased_count++;
                             (*p_count)--;
-                            if (strcmp(ID_input, (*ID_pole)[i]) == 0)
+                            if (strcmp(ID_input, (*ID_pole)[i]) == 0) // ak stále na posunutej pozícii je ID, ktoré chcem vymazať opakujem proces
                             {
                                 i--;
                             }
@@ -612,7 +619,7 @@ int main()
                 HOD_pole = NULL;
                 CAS_pole = NULL;
                 DATE_pole = NULL;
-
+                fclose(file_data);
                 return 0;
             }
             else
